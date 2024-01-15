@@ -1,0 +1,694 @@
+Back Up
+class HomeScreen extends StatelessWidget {‎
+  @override
+  Widget build(BuildContext context) {‎
+    return Scaffold(‎
+      backgroundColor: Colors.white,‎
+      body: SafeArea(‎
+        bottom: false,‎
+        child: Column(‎
+          crossAxisAlignment: CrossAxisAlignment.start,‎
+          children: [‎
+            Padding(‎
+              padding:‎
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: ‎‎20.0),‎
+              child: Text(‎
+                'Find Your Next Home',‎
+                style: TextStyle(‎
+                  fontSize: 28,‎
+                  fontWeight: FontWeight.bold,‎
+                ),‎
+              ),‎
+            ),‎
+            Container(‎
+              height: 200,‎
+              margin: EdgeInsets.symmetric(horizontal: 16),‎
+              decoration: BoxDecoration(‎
+                borderRadius: BorderRadius.circular(12),‎
+                image: DecorationImage(‎
+                  image: NetworkImage(‎
+                      'https://via.placeholder.com/500x300'), // Ganti ‎dengan URL gambar dari internet
+                  fit: BoxFit.cover,‎
+                ),‎
+              ),‎
+            ),‎
+            SizedBox(height: 20),‎
+            Padding(‎
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),‎
+              child: Text(‎
+                'Recommended',‎
+                style: TextStyle(‎
+                  fontSize: 22,‎
+                  fontWeight: FontWeight.bold,‎
+                ),‎
+              ),‎
+            ),‎
+            Expanded(‎
+              child: ListView.builder(‎
+                itemCount: 10, // Ganti dengan jumlah item yang sesuai
+                itemBuilder: (BuildContext context, int index) {‎
+                  return ListTile(‎
+                    leading: CircleAvatar(‎
+                      radius: 30,‎
+                      backgroundImage: NetworkImage(‎
+                          'https://via.placeholder.com/150'), // Ganti ‎dengan URL gambar dari internet
+                    ),‎
+                    title: Text('Property Title $index'),‎
+                    subtitle: Column(‎
+                      crossAxisAlignment: CrossAxisAlignment.start,‎
+                      children: [‎
+                        Text('Location $index'),‎
+                        Text('Bedrooms: 2, Bathrooms: 2'), // Informasi ‎tambahan
+                      ],‎
+                    ),‎
+                    trailing: Text('\$500'), // Ganti dengan harga yang ‎sesuai
+                    onTap: () {‎
+                      // Tambahkan aksi ketika item dipilih‎
+                    },‎
+                  );‎
+                },‎
+              ),‎
+            ),‎
+          ],‎
+        ),‎
+      ),‎
+    );‎
+  }‎
+
+class SearchScreen extends StatelessWidget {‎
+  @override
+  Widget build(BuildContext context) {‎
+    return Scaffold(‎
+      appBar: AppBar(‎
+        title: Text('Search Screen'),‎
+        automaticallyImplyLeading: false, // Menyembunyikan tombol ‎kembali
+      ),‎
+      body: Center(‎
+        child: Text('This is the Search Screen'),‎
+      ),‎
+    );‎
+  }‎
+}‎
+
+// ignore_for_file: unused_import, unused_local_variable
+
+import 'package:flutter/material.dart';
+import 'package:mobile_kokosan/searchscreen.dart';
+import 'package:mobile_kokosan/space_provider.dart';
+import 'package:mobile_kokosan/theme.dart';
+import 'package:mobile_kokosan/city.dart';
+import 'package:mobile_kokosan/city_card.dart';
+import 'package:mobile_kokosan/bottom_navigation.dart';
+import 'package:provider/provider.dart';
+
+// Import statements
+
+class Homepage extends StatefulWidget {
+  final String userEmail;
+
+  Homepage(this.userEmail);
+
+  @override
+  _HomepageState createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  int _currentIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    switch (_currentIndex) {
+      case 0:
+        // Logic for home screen (no specific action here)
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SearchScreen()),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => KosScreen()),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PesanScreen()),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProfilScreen()),
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _onCityTapped(String cityName) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => KosCityScreen(cityName)),
+    );
+
+    var spaceProvider = Provider.of<SpaceProvider>(context, listen: false);
+    await spaceProvider.getSpacesInCity(cityName); // Menambahkan await di sini
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var spaceProvider = Provider.of<SpaceProvider>(context);
+    return Scaffold(
+      backgroundColor: whiteColor,
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          children: [
+            SizedBox(height: edge),
+            Padding(
+              padding: EdgeInsets.only(left: edge),
+              child: Text(
+                'Explore',
+                style: blackTextStyle.copyWith(fontSize: 24),
+              ),
+            ),
+            SizedBox(height: 2),
+            Padding(
+              padding: EdgeInsets.only(left: edge),
+              child: Text(
+                'Mencari kosan yang cozy',
+                style: greyTextStyle.copyWith(fontSize: 16),
+              ),
+            ),
+            SizedBox(height: 30),
+            Padding(
+              padding: EdgeInsets.only(left: edge),
+              child: Text(
+                'Popular Cities',
+                style: regulerTextStyle.copyWith(fontSize: 16),
+              ),
+            ),
+            SizedBox(height: 16),
+            Container(
+              height: 150,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      _onCityTapped('Jakarta');
+                    },
+                    child: CityCard(
+                      City(
+                        id: 1,
+                        name: 'Jakarta',
+                        imageUrl: 'assets/city1.png',
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  GestureDetector(
+                    onTap: () {
+                      _onCityTapped('Bandung');
+                    },
+                    child: CityCard(
+                      City(
+                        id: 2,
+                        name: 'Bandung',
+                        imageUrl: 'assets/city2.png',
+                        isPopular: true,
+                      ),
+                    ),
+                  ),
+                  // Add CityCard for other cities similarly
+                ],
+              ),
+            ),
+            SizedBox(height: 50 + (edge * 2)),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          switch (_currentIndex) {
+            case 0:
+              // Logic for home screen (no specific action here)
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchScreen()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => KosScreen()),
+              );
+              break;
+            case 3:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PesanScreen()),
+              );
+              break;
+            case 4:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilScreen()),
+              );
+              break;
+            default:
+              break;
+          }
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {
+                _onItemTapped(0);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                _onItemTapped(1);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.business),
+              onPressed: () {
+                _onItemTapped(2);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.message),
+              onPressed: () {
+                _onItemTapped(3);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                _onItemTapped(4);
+              },
+            ),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
+
+// class SearchScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Search Screen'),
+//       ),
+//       body: Center(
+//         child: Text('This is the Search Screen'),
+//       ),
+//     );
+//   }
+// }
+
+class KosScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Kos Screen'),
+      ),
+      body: Center(
+        child: Text('This is the Kos Screen'),
+      ),
+    );
+  }
+}
+
+class PesanScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Pesan Screen'),
+      ),
+      body: Center(
+        child: Text('This is the Pesan Screen'),
+      ),
+    );
+  }
+}
+
+class ProfilScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Profil Screen'),
+      ),
+      body: Center(
+        child: Text('This is the Profil Screen'),
+      ),
+    );
+  }
+}
+
+class KosCityScreen extends StatelessWidget {
+  final String cityName;
+
+  KosCityScreen(this.cityName);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Kos in $cityName'),
+      ),
+      body: Center(
+        child: Text('Kos in $cityName'),
+      ),
+    );
+  }
+}
+
+
+
+
+// ignore_for_file: unused_import, unused_field, unused_local_variable
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobile_kokosan/lupa_password.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mobile_kokosan/daftar-as-seeker.dart';
+import 'package:mobile_kokosan/firebase_options.dart';
+import 'package:mobile_kokosan/home_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Firebase Auth Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: false,
+      ),
+      home: const LoginPencariKos(),
+    );
+  }
+}
+
+class LoginPencariKos extends StatefulWidget {
+  const LoginPencariKos({Key? key}) : super(key: key);
+
+  @override
+  _LoginPencariKosState createState() => _LoginPencariKosState();
+}
+
+class _LoginPencariKosState extends State<LoginPencariKos> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isObscure = true;
+
+  // Future<void> _login() async {
+  //   try {
+  //     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+  //       email: _emailController.text,
+  //       password: _passwordController.text,
+  //     );
+
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => Homepage(userCredential.user?.email ?? ""),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: const Text('Email atau Password Anda Salah!'),
+  //         action: SnackBarAction(
+  //           label: 'Tutup',
+  //           onPressed: () {},
+  //         ),
+  //       ),
+  //     );
+  //     print("Error: $e");
+  //   }
+  // }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   double baseWidth = 360;
+  //   double fem = MediaQuery.of(context).size.width / baseWidth;
+  //   double ffem = fem * 0.97;
+
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       title: Text(
+  //         'Login Pencari Kos',
+  //         style: TextStyle(
+  //           color: Colors.black,
+  //           fontWeight: FontWeight.w700,
+  //         ),
+  //       ),
+  //       backgroundColor: Colors.yellow,
+  //       elevation: 0,
+  //     ),
+  //     body: SingleChildScrollView(
+  //       child: Container(
+  //         width: double.infinity,
+  //         height: MediaQuery.of(context).size.height,
+  //         decoration: BoxDecoration(
+  //           color: Color.fromARGB(255, 245, 245, 245),
+  //         ),
+  //         child: Padding(
+  //           padding: EdgeInsets.all(16.0),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.stretch,
+  //             children: [
+  //               Image.asset(
+  //                 'assets/login.png', // Adjust the path accordingly
+  //                 height: 120 * fem,
+  //               ),
+  //               SizedBox(height: 16 * fem),
+  //               Form(
+  //                 key: _formKey,
+  //                 child: TextFormField(
+  //                   controller: _emailController,
+  //                   keyboardType: TextInputType.emailAddress,
+  //                   validator: (value) {
+  //                     if (value == null || value.isEmpty) {
+  //                       return 'Email tidak boleh kosong';
+  //                     }
+  //                     return null;
+  //                   },
+  //                   decoration: InputDecoration(
+  //                     filled: true,
+  //                     fillColor: Color.fromARGB(255, 224, 248, 140),
+  //                     labelText: 'Email',
+  //                     prefixIcon: Icon(Icons.email),
+  //                     border: OutlineInputBorder(
+  //                       borderRadius: BorderRadius.circular(10 * fem),
+  //                     ),
+  //                     hintText: 'Masukkan Email Anda',
+  //                   ),
+  //                 ),
+  //               ),
+  //               SizedBox(height: 16 * fem),
+  //               TextFormField(
+  //                 controller: _passwordController,
+  //                 obscureText: _isObscure,
+  //                 validator: (value) {
+  //                   if (value == null || value.isEmpty) {
+  //                     return 'Password tidak boleh kosong';
+  //                   }
+  //                   return null;
+  //                 },
+  //                 decoration: InputDecoration(
+  //                   labelText: 'Password',
+  //                   prefixIcon: Icon(Icons.key),
+  //                   filled: true,
+  //                   fillColor: Color.fromARGB(255, 224, 248, 140),
+  //                   border: OutlineInputBorder(
+  //                     borderRadius: BorderRadius.circular(10 * fem),
+  //                   ),
+  //                   hintText: 'Masukkan Password',
+  //                   suffixIcon: IconButton(
+  //                     onPressed: () {
+  //                       setState(() {
+  //                         _isObscure = !_isObscure;
+  //                       });
+  //                     },
+  //                     icon: Icon(
+  //                       _isObscure ? Icons.visibility_off : Icons.visibility,
+  //                       color: Colors.black,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               SizedBox(height: 24 * fem),
+  //               ElevatedButton(
+  //                 onPressed: () {
+  //                   if (_formKey.currentState?.validate() ?? false) {
+  //                     // Form is valid, perform login
+  //                     _login();
+  //                   }
+  //                 },
+  //                 style: ElevatedButton.styleFrom(
+  //                   foregroundColor: Colors.white,
+  //                   backgroundColor: Color(0xff5843BE),
+  //                   shape: RoundedRectangleBorder(
+  //                     borderRadius: BorderRadius.circular(20 * fem),
+  //                   ),
+  //                   padding: EdgeInsets.symmetric(vertical: 16),
+  //                 ),
+  //                 child: Text(
+  //                   'Login',
+  //                   style: TextStyle(
+  //                     fontSize: 18 * ffem,
+  //                     fontWeight: FontWeight.w700,
+  //                   ),
+  //                 ),
+  //               ),
+  //               SizedBox(height: 16 * fem),
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   Text(
+  //                     'Belum punya akun?',
+  //                     style: TextStyle(
+  //                       fontSize: 14 * ffem,
+  //                       color: Color.fromARGB(255, 50, 50, 50),
+  //                       fontWeight: FontWeight.w400,
+  //                     ),
+  //                   ),
+  //                   TextButton(
+  //                     onPressed: () {
+  //                       // Navigasi ke halaman DaftarAsSeeker
+  //                       Navigator.push(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                           builder: (context) => DaftarAsSeeker(),
+  //                         ),
+  //                       );
+  //                     },
+  //                     child: Text(
+  //                       'Daftar sekarang!',
+  //                       style: TextStyle(
+  //                         fontSize: 13 * ffem,
+  //                         color: Color(0xff5843BE),
+  //                         fontWeight: FontWeight.w700,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               SizedBox(height: 16 * fem),
+  //               TextButton(
+  //                 onPressed: () {
+  //                   // Navigasi ke halaman LupaPassword
+  //                   Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(
+  //                       builder: (context) => LupaPassword(),
+  //                     ),
+  //                   );
+  //                 },
+  //                 child: Text(
+  //                   'Lupa Password?',
+  //                   style: TextStyle(
+  //                     fontSize: 12 * ffem,
+  //                     color: Color(0xff5843BE),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // class ProfilScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Profil Screen'),
+//         automaticallyImplyLeading: false, // Menyembunyikan tombol kembali
+//       ),
+//       body: Center(
+//         child: ListView(
+//           padding: EdgeInsets.all(16.0),
+//           children: [
+//             ListTile(
+//               title: Text('Profile Settings'),
+//               onTap: () {
+//                 // Navigasi ke halaman pengaturan profil
+//                 // Misalnya: Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileSettingsScreen()));
+//               },
+//             ),
+//             ListTile(
+//               title: Text('Change Password'),
+//               onTap: () {
+//                 // Navigasi ke halaman ubah password
+//                 // Misalnya: Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
+//               },
+//             ),
+//             ListTile(
+//               title: Text('Logout'),
+//               onTap: () {
+//                 // Lakukan proses logout di sini
+//                 _logout(context);
+//               },
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   void _logout(BuildContext context) {
+//     // Lakukan proses logout, seperti menghapus data sesi, membersihkan penyimpanan lokal, dll.
+//     // Contoh menggunakan Firebase Auth untuk logout:
+//     FirebaseAuth.instance.signOut();
+
+//     // Setelah logout berhasil, arahkan kembali ke halaman login
+//     Navigator.pushReplacement(
+//       context,
+//       MaterialPageRoute(builder: (context) => LoginPencariKos()),
+//     );
+//   }
+// }
